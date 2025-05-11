@@ -21,7 +21,7 @@ const EventForm = ({ onEventAdd }) => {
     e.preventDefault();
 
     axios
-      .post(`${import.meta.env.VITE_BACKEND_URL}/api/events`, newEvent)
+      .post(`${process.env.REACT_APP_BACKEND_URL}/api/events`, newEvent)
       .then((response) => {
         onEventAdd(response.data);
         setNewEvent({ title: '', date: '', description: '', reminder: false });

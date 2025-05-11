@@ -1,92 +1,96 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import EventForm from './components/EventForm';
-import EventList from './components/EventList';
-import './App.css'
-
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import EventForm from "./components/EventForm";
+import EventList from "./components/EventList";
+import "./App.css";
 
 const App = () => {
-	const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState([]);
 
-	useEffect(() => {
-		
-		axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/events`)
-			.then(response => setEvents(response.data))
-			.catch(error => console.error(error));
-	}, []);
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_BACKEND_URL}/api/events`)
+      .then((response) => setEvents(response.data))
+      .catch((error) => console.error(error));
+  }, []);
 
-	const handleEventAdd = (newEvent) => {
-		setEvents([...events, newEvent]);
-	};
+  const handleEventAdd = (newEvent) => {
+    setEvents([...events, newEvent]);
+  };
 
-	const handleEventDelete = (id) => {
-		console.log("delete event " + id)
-		// Delete an event
-		axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/events/${id}`)
-			.then(
-				() =>
-					setEvents(events.filter(event => event._id !== id)))
-			.catch(error => console.error(error));
-	};
+  const handleEventDelete = (id) => {
+    console.log("delete event " + id);
+    // Delete an event
+    axios
+      .delete(`${process.env.REACT_APP_BACKEND_URL}/api/events/${id}`)
+      .then(() => setEvents(events.filter((event) => event._id !== id)))
+      .catch((error) => console.error(error));
+  };
 
-	const handleToggleReminder = (eventId) => {
-		const selectedEvent =
-			events.find(event => event._id === eventId);
+  const handleToggleReminder = (eventId) => {
+    const selectedEvent = events.find((event) => event._id === eventId);
 
-		const updatedEvent =
-		{
-			...selectedEvent,
-			reminder: !selectedEvent.reminder
-		};
+    const updatedEvent = {
+      ...selectedEvent,
+      reminder: !selectedEvent.reminder,
+    };
 
-		axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/events/${eventId}`, updatedEvent)
-			.then(response => {
-		
-				const updatedEvents = events.map(event =>
-					event._id === eventId ? updatedEvent : event
-				);
-				setEvents(updatedEvents);
-			})
-			.catch(
-				error =>
-					console.error(`Error updating reminder status for
-				event with ID ${eventId}:`, error));
-	};
+    axios
+      .put(
+        `${process.env.REACT_APP_BACKEND_URL}/api/events/${eventId}`,
+        updatedEvent
+      )
+      .then((response) => {
+        const updatedEvents = events.map((event) =>
+          event._id === eventId ? updatedEvent : event
+        );
+        setEvents(updatedEvents);
+      })
+      .catch((error) =>
+        console.error(
+          `Error updating reminder status for
+				event with ID ${eventId}:`,
+          error
+        )
+      );
+  };
 
-	const onEventEdit = (eventId, updatedData) => {
-		// Update the event in the database
-		axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/events/${eventId}`, updatedData)
-			.then(response => {
-				// If the update is successful, update the events in the state
-				const updatedEvents = events.map(event =>
-					event._id ===
-						eventId ?
-						{ ...event, ...updatedData } : event
-				);
-				setEvents(updatedEvents);
-			})
-			.catch(
-				error =>
-					console.error(`Error updating event with
-						ID ${eventId}:`, error)
-			);
-	};
+  const onEventEdit = (eventId, updatedData) => {
+    // Update the event in the database
+    axios
+      .put(
+        `${process.env.REACT_APP_BACKEND_URL}/api/events/${eventId}`,
+        updatedData
+      )
+      .then((response) => {
+        // If the update is successful, update the events in the state
+        const updatedEvents = events.map((event) =>
+          event._id === eventId ? { ...event, ...updatedData } : event
+        );
+        setEvents(updatedEvents);
+      })
+      .catch((error) =>
+        console.error(
+          `Error updating event with
+						ID ${eventId}:`,
+          error
+        )
+      );
+  };
 
-	return (
-		<div className='main-container'>
-			<h1 className='evtmgt'>
-				{/* EVTMGT */}
-			</h1>
-			<h2>Event Management App</h2>
-			<EventForm onEventAdd={handleEventAdd} />
-			<EventList
-				events={events}
-				onEventDelete={handleEventDelete}
-				onToggleReminder={handleToggleReminder}
-				onEventEdit={onEventEdit}
-			/>
-		</div>
-	);
+  return (
+    <div className="main-container">
+      <h1 className="evtmgt">{/* EVTMGT */}</h1>
+      <h2>Event Management App</h2>
+      <EventForm onEventAdd={handleEventAdd} />
+      <EventList
+        events={events}
+        onEventDelete={handleEventDelete}
+        onToggleReminder={handleToggleReminder}
+        onEventEdit={onEventEdit}
+      />
+    </div>
+  );
 };
 
 export default App;
