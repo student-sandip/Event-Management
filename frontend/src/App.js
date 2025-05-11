@@ -10,7 +10,7 @@ const App = () => {
 
 	useEffect(() => {
 		
-		axios.get('http://localhost:5000/api/events')
+		axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/events`)
 			.then(response => setEvents(response.data))
 			.catch(error => console.error(error));
 	}, []);
@@ -22,7 +22,7 @@ const App = () => {
 	const handleEventDelete = (id) => {
 		console.log("delete event " + id)
 		// Delete an event
-		axios.delete(`http://localhost:5000/api/events/${id}`)
+		axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/events/${id}`)
 			.then(
 				() =>
 					setEvents(events.filter(event => event._id !== id)))
@@ -39,7 +39,7 @@ const App = () => {
 			reminder: !selectedEvent.reminder
 		};
 
-		axios.put(`http://localhost:5000/api/events/${eventId}`, updatedEvent)
+		axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/events/${eventId}`, updatedEvent)
 			.then(response => {
 		
 				const updatedEvents = events.map(event =>
@@ -55,7 +55,7 @@ const App = () => {
 
 	const onEventEdit = (eventId, updatedData) => {
 		// Update the event in the database
-		axios.put(`http://localhost:5000/api/events/${eventId}`, updatedData)
+		axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/events/${eventId}`, updatedData)
 			.then(response => {
 				// If the update is successful, update the events in the state
 				const updatedEvents = events.map(event =>
